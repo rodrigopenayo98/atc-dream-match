@@ -5,23 +5,31 @@ export const teamsSlice = createSlice({
   initialState: [],
   reducers: {
     addTeam: (state, action) => {
-      if (state.length < 2) state.push(action.payload);
-    },
-    updateTeamName: (state, action) => {
-      const { id, name } = action.payload;
-      const team = state.find(team => team.id === id);
-      if (team) team.name = name;
+      state.push(action.payload);
     },
     removeTeam: (state, action) => {
       return state.filter(team => team.id !== action.payload);
     },
+    updateTeamName: (state, action) => {
+      const team = state.find(team => team.id === action.payload.id);
+      if (team) {
+        team.name = action.payload.name;
+      }
+    },
     addPlayerToTeam: (state, action) => {
-      const { teamId, player } = action.payload;
-      const team = state.find(team => team.id === teamId);
-      if (team && team.players.length < 5) team.players.push(player);
-    }
-  }
+      const team = state.find(team => team.id === action.payload.teamId);
+      if (team && team.players.length < 5) {
+        team.players.push(action.payload.player);
+      }
+    },
+    removePlayerFromTeam: (state, action) => {
+      const team = state.find(team => team.id === action.payload.teamId);
+      if (team) {
+        team.players = team.players.filter(player => player.idPlayer !== action.payload.playerId);
+      }
+    },
+  },
 });
 
-export const { addTeam, updateTeamName, removeTeam, addPlayerToTeam } = teamsSlice.actions;
+export const { addTeam, removeTeam, updateTeamName, addPlayerToTeam, removePlayerFromTeam } = teamsSlice.actions;
 export default teamsSlice.reducer;
