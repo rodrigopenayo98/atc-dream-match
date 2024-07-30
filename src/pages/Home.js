@@ -14,13 +14,13 @@ export function Home() {
         <div className="flex flex-col sm:flex-row items-center w-full justify-around">
           <Link
             to="/teams"
-            className="bg-blue-500 text-white px-4 py-2 rounded mb-2 sm:mb-0 sm:mr-2 font-bold text-center"
+            className="bg-blue-500 hover:bg-blue-700 transition duration-300 ease-in-out text-white px-4 py-2 rounded mb-2 sm:mb-0 sm:mr-2 font-bold text-center"
           >
             Ver Equipos Creados
           </Link>
           <Link
             to="/create-team"
-            className="bg-green-500 text-white px-4 py-2 rounded font-bold text-center"
+            className="bg-green-500 hover:bg-green-700 transition duration-300 ease-in-out text-white px-4 py-2 rounded font-bold text-center"
           >
             Crear Nuevo Equipo
           </Link>
