@@ -1,24 +1,23 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Home from './pages/Home';
-import Teams from './pages/Teams';
-import TeamDetail from './components/TeamDetail';
-import PlayerList from './components/PlayerList';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { Teams } from './pages/Teams';
+import { TeamDetail } from './components/TeamDetail';
+import { PlayerList } from './components/PlayerList'; 
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/teams" component={Teams} />
-          <Route path="/team/:id" component={TeamDetail} />
-          <Route path="/players" component={PlayerList} />
-        </Switch>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/teams" element={<Teams />} />
+        <Route path="/team/:id" element={<TeamDetail />} />
+        <Route path="/players" element={<PlayerList />} />
+      </Routes>
     </Router>
   );
 }
 
 export default App;
+
 
