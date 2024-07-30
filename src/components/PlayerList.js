@@ -6,7 +6,7 @@ export function PlayerList ({ onSelect }) {
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-    axios.get('https://apifootball.com/api/?action=getPlayers&APIkey=YOUR_API_KEY')
+    axios.get('https://apifootball.com/api/?action=getPlayers&APIkey=024ab6c659cd714a26da8e6198e5983b58805f2141de253e0fa22004988e7fda')
       .then(response => setPlayers(response.data))
       .catch(error => console.error('Error fetching players:', error));
   }, []);
