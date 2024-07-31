@@ -2,13 +2,19 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import PlayerCard from './PlayerCard';
 
-export function PlayerList ({ onSelect }) {
+export function PlayerList({ onSelect }) {
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
-    axios.get('https://apifootball.com/api/?action=getPlayers&APIkey=024ab6c659cd714a26da8e6198e5983b58805f2141de253e0fa22004988e7fda')
-      .then(response => setPlayers(response.data))
-      .catch(error => console.error('Error fetching players:', error));
+    const fetchPlayers = async () => {
+      try {
+        const response = await axios.get('https://apifootball.com/api/?action=getPlayers&APIkey=024ab6c659cd714a26da8e6198e5983b58805f2141de253e0fa22004988e7fda');
+        setPlayers(response.data);
+      } catch (error) {
+        console.error('Error fetching players:', error);
+      }
+    };
+    fetchPlayers();
   }, []);
 
   return (
@@ -18,4 +24,6 @@ export function PlayerList ({ onSelect }) {
       ))}
     </div>
   );
-};
+}
+
+

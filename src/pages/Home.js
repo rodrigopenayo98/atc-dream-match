@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [teamName, setTeamName] = useState("");
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setTeamName(""); // Limpiar el nombre del equipo al cerrar el modal
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Aquí puedes manejar el envío del formulario para crear un nuevo equipo
+    console.log("Nombre del equipo:", teamName);
+    closeModal(); // Cierra el modal después de enviar
+  };
+
   return (
     <div className="container mx-auto p-4 flex flex-col border rounded-xl shadow-lg bg-[rgba(255,255,255,0.75)] w-[90%] sm:w-[70%] md:w-[50%] lg:w-[40%] xl:w-[50%] h-auto px-6 py-6 sm:px-8 sm:py-8 md:px-12 md:py-12">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Bienvenido a ATC Dream Match</h1>
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+        Bienvenido a ATC Dream Match
+      </h1>
       <p className="text-sm sm:text-base md:text-lg mb-4 font-semibold">
         ¡Bienvenido a ATC Dream Match! Aquí puedes crear y gestionar dos equipos
         de fútbol con tus jugadores favoritos. Sin restricciones de posición,
@@ -18,17 +36,58 @@ export function Home() {
           >
             Ver Equipos Creados
           </Link>
-          <Link
-            to="/create-team"
+          <button
+            onClick={openModal}
             className="bg-green-500 hover:bg-green-700 transition duration-300 ease-in-out text-white px-4 py-2 rounded font-bold text-center"
           >
             Crear Nuevo Equipo
-          </Link>
+          </button>
         </div>
       </div>
+
+      {/* Modal para crear un nuevo equipo */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-[90%] sm:w-[70%] md:w-[50%] lg:w-[40%] xl:w-[30%]">
+            <h2 className="text-xl font-bold mb-4">Crear Nuevo Equipo</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="teamName" className="block text-sm font-semibold mb-2">
+                  Nombre del Equipo:
+                </label>
+                <input
+                  type="text"
+                  id="teamName"
+                  name="teamName"
+                  value={teamName}
+                  onChange={(e) => setTeamName(e.target.value)}
+                  className="border border-gray-300 rounded px-3 py-2 w-full"
+                  required
+                />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded mr-2"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                >
+                  Crear Equipo
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default Home;
+
 
