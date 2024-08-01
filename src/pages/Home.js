@@ -1,21 +1,36 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { addTeam } from "../store/teamsSlice";
 
 export function Home() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const teams = useSelector((state) => state.teams);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [teamName, setTeamName] = useState("");
+  const [userName, setUserName] = useState("");
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    if (teams.length < 2) {
+      setIsModalOpen(true);
+    } else {
+      alert("No se pueden crear más de dos equipos.");
+    }
+  };
+  
   const closeModal = () => {
     setIsModalOpen(false);
-    setTeamName(""); // Limpiar el nombre del equipo al cerrar el modal
+    setTeamName("");
+    setUserName("");
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Aquí puedes manejar el envío del formulario para crear un nuevo equipo
-    console.log("Nombre del equipo:", teamName);
-    closeModal(); // Cierra el modal después de enviar
+    const newTeam = { id: Date.now(), name: teamName, players: [] };
+    dispatch(addTeam(newTeam));
+    closeModal();
+    navigate("/teams");
   };
 
   return (
@@ -45,14 +60,33 @@ export function Home() {
         </div>
       </div>
 
-      {/* Modal para crear un nuevo equipo */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-[90%] sm:w-[70%] md:w-[50%] lg:w-[40%] xl:w-[30%]">
             <h2 className="text-xl font-bold mb-4">Crear Nuevo Equipo</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="teamName" className="block text-sm font-semibold mb-2">
+                <label
+                  htmlFor="userName"
+                  className="block text-sm font-semibold mb-2"
+                >
+                  Nombre de Usuario:
+                </label>
+                <input
+                  type="text"
+                  id="userName"
+                  name="userName"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="border border-gray-300 rounded px-3 py-2 w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="teamName"
+                  className="block text-sm font-semibold mb-2"
+                >
                   Nombre del Equipo:
                 </label>
                 <input
