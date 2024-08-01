@@ -2,7 +2,6 @@ const Team = require('../models/teamModel');
 const Player = require('../models/playerModel');
 const TeamPlayer = require('../models/teamPlayerModel');
 
-// Eliminar un equipo por ID
 exports.deleteTeam = async (req, res) => {
   try {
     const team = await Team.findByPk(req.params.id);
@@ -14,7 +13,6 @@ exports.deleteTeam = async (req, res) => {
   }
 };
 
-// Añadir un jugador a un equipo
 exports.addPlayerToTeam = async (req, res) => {
   try {
     const { playerId } = req.body;
@@ -24,11 +22,9 @@ exports.addPlayerToTeam = async (req, res) => {
     const player = await Player.findByPk(playerId);
     if (!player) return res.status(404).json({ message: 'Player not found' });
 
-    // Verificar si el equipo ya tiene 5 jugadores
     const teamPlayersCount = await TeamPlayer.count({ where: { teamId: team.id } });
     if (teamPlayersCount >= 5) return res.status(400).json({ message: 'Team is already full' });
 
-    // Verificar si el jugador ya está en otro equipo
     const existingTeamPlayer = await TeamPlayer.findOne({ where: { playerId } });
     if (existingTeamPlayer) return res.status(400).json({ message: 'Player is already in another team' });
 
@@ -39,7 +35,6 @@ exports.addPlayerToTeam = async (req, res) => {
   }
 };
 
-// Eliminar un jugador de un equipo
 exports.removePlayerFromTeam = async (req, res) => {
   try {
     const { id, playerId } = req.params;
@@ -61,7 +56,6 @@ exports.removePlayerFromTeam = async (req, res) => {
   }
 };
 
-// Obtener todos los equipos
 exports.getAllTeams = async (req, res) => {
   try {
     const teams = await Team.findAll({ include: Player });
@@ -71,7 +65,6 @@ exports.getAllTeams = async (req, res) => {
   }
 };
 
-// Obtener un equipo por ID
 exports.getTeamById = async (req, res) => {
   try {
     const team = await Team.findByPk(req.params.id, { include: Player });
@@ -82,7 +75,6 @@ exports.getTeamById = async (req, res) => {
   }
 };
 
-// Crear un equipo
 exports.createTeam = async (req, res) => {
   try {
     const { name } = req.body;
@@ -98,7 +90,6 @@ exports.createTeam = async (req, res) => {
   }
 };
 
-// Actualizar un equipo
 exports.updateTeam = async (req, res) => {
   try {
     const { name } = req.body;
@@ -113,5 +104,6 @@ exports.updateTeam = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 

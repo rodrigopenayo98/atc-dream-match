@@ -2,23 +2,16 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Teams', {
-      id: {
+    await queryInterface.createTable('Players', {
+      player_id: {
+        type: Sequelize.STRING,
         allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+        unique: true,
+        primaryKey: true
       },
-      name: {
+      player_name: {
         type: Sequelize.STRING,
         allowNull: false
-      },
-      userId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id'
-        }
       },
       createdAt: {
         allowNull: false,
@@ -32,9 +25,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Teams');
+    await queryInterface.dropTable('Players');
   }
 };
-
-
 

@@ -6,3 +6,4 @@ router.get('/', playerController.getPlayers);
 router.get('/:id', playerController.getPlayerById);
 
 module.exports = router;
+

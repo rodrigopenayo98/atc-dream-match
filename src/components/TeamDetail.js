@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { PlayerList } from './PlayerList';
+import PlayerList from './PlayerList';
 
 export function TeamDetail() {
   const { id } = useParams();
   const [team, setTeam] = useState(null);
   const [teamName, setTeamName] = useState('');
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   useEffect(() => {
-    const fetchTeam = async () => {
-      try {
-        const response = await fetch(`/api/teams/${id}`);
-        const data = await response.json();
-        setTeam(data);
-        setTeamName(data.name);
-      } catch (error) {
-        console.error('Error fetching team:', error);
+    const fetchTeam = () => {
+      const teams = JSON.parse(localStorage.getItem('teams')) || [];
+      const team = teams.find(t => t.id === parseInt(id));
+      if (team) {
+        setTeam(team);
+        setTeamName(team.name);
       }
     };
     fetchTeam();
@@ -24,44 +21,31 @@ export function TeamDetail() {
 
   const handleNameChange = (e) => setTeamName(e.target.value);
 
-  const handleSaveName = async () => {
-    try {
-      await fetch(`/api/teams/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: teamName })
-      });
-      setTeam(prevTeam => ({ ...prevTeam, name: teamName }));
-    } catch (error) {
-      console.error('Error saving team name:', error);
+  const handleSaveName = () => {
+    const teams = JSON.parse(localStorage.getItem('teams')) || [];
+    const updatedTeams = teams.map(t => (t.id === parseInt(id) ? { ...t, name: teamName } : t));
+    localStorage.setItem('teams', JSON.stringify(updatedTeams));
+    setTeam(prevTeam => ({ ...prevTeam, name: teamName }));
+  };
+
+  const handleSelectPlayer = (player) => {
+    if (team.players.length < 5 && !team.players.some(p => p.idPlayer === player.idPlayer)) {
+      const updatedTeam = { ...team, players: [...team.players, player] };
+      const teams = JSON.parse(localStorage.getItem('teams')) || [];
+      const updatedTeams = teams.map(t => (t.id === parseInt(id) ? updatedTeam : t));
+      localStorage.setItem('teams', JSON.stringify(updatedTeams));
+      setTeam(updatedTeam);
+    } else {
+      alert('No se pueden añadir más jugadores o el jugador ya está en el equipo.');
     }
   };
 
-  const handleSelectPlayer = async (player) => {
-    if (team.players.length < 5) {
-      try {
-        await fetch(`/api/teams/${id}/players`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ playerId: player.idPlayer })
-        });
-        setTeam(prevTeam => ({ ...prevTeam, players: [...prevTeam.players, player] }));
-      } catch (error) {
-        console.error('Error adding player to team:', error);
-      }
-    }
-  };
-
-  const handleRemovePlayer = async (playerId) => {
-    try {
-      await fetch(`/api/teams/${id}/players/${playerId}`, { method: 'DELETE' });
-      setTeam(prevTeam => ({
-        ...prevTeam,
-        players: prevTeam.players.filter(player => player.idPlayer !== playerId)
-      }));
-    } catch (error) {
-      console.error('Error removing player from team:', error);
-    }
+  const handleRemovePlayer = (playerId) => {
+    const updatedTeam = { ...team, players: team.players.filter(player => player.idPlayer !== playerId) };
+    const teams = JSON.parse(localStorage.getItem('teams')) || [];
+    const updatedTeams = teams.map(t => (t.id === parseInt(id) ? updatedTeam : t));
+    localStorage.setItem('teams', JSON.stringify(updatedTeams));
+    setTeam(updatedTeam);
   };
 
   if (!team) return <p>Loading...</p>;
@@ -85,17 +69,21 @@ export function TeamDetail() {
       </div>
       <h2 className="text-2xl font-semibold">Jugadores del Equipo</h2>
       <ul className="space-y-2">
-        {team.players.map(player => (
-          <li key={player.idPlayer} className="border p-2 rounded flex justify-between items-center">
-            {player.name}
-            <button
-              onClick={() => handleRemovePlayer(player.idPlayer)}
-              className="bg-red-500 text-white px-2 py-1 rounded"
-            >
-              Eliminar
-            </button>
-          </li>
-        ))}
+        {Array.isArray(team.players) && team.players.length > 0 ? (
+          team.players.map(player => (
+            <li key={player.idPlayer} className="border p-2 rounded flex justify-between items-center">
+              {player.name}
+              <button
+                onClick={() => handleRemovePlayer(player.idPlayer)}
+                className="bg-red-500 text-white px-2 py-1 rounded"
+              >
+                Eliminar
+              </button>
+            </li>
+          ))
+        ) : (
+          <p>No hay jugadores en el equipo.</p>
+        )}
       </ul>
       <h2 className="text-2xl font-semibold mt-4">Agregar Jugadores</h2>
       <PlayerList onSelect={handleSelectPlayer} />
@@ -107,3 +95,4 @@ export function TeamDetail() {
     </div>
   );
 }
+

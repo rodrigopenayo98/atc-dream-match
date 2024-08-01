@@ -7,3 +7,4 @@ const sequelize = new Sequelize('atc_dream_match', 'postgres', '5550129piyuelo',
 });
 
 module.exports = sequelize;
+

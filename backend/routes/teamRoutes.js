@@ -1,15 +1,25 @@
 const express = require('express');
-const router = express.Router();
-const teamController = require('../controllers/teamController');
-const playerController = require('../controllers/playerController');
+const sequelize = require('./config/db');
+const teamRoutes = require('./routes/teamRoutes');
+const playerRoutes = require('./routes/playerRoutes');
 
-router.get('/', teamController.getAllTeams);
-router.get('/:id', teamController.getTeamById);
-router.post('/', teamController.createTeam);
-router.put('/:id', teamController.updateTeam);
-router.delete('/:id', teamController.deleteTeam);
-router.post('/:id/players', teamController.addPlayerToTeam);
-router.delete('/:id/players/:playerId', teamController.removePlayerFromTeam);
+const app = express();
+const port = 3000;
 
-module.exports = router;
+// Middleware
+app.use(express.json());
+
+// Rutas
+app.use('/api/teams', teamRoutes);
+app.use('/api/players', playerRoutes);
+
+// Sincronizar modelos y comenzar el servidor
+sequelize.sync().then(() => {
+  app.listen(port, () => {
+    console.log(`Servidor corriendo en http://localhost:${port}`);
+  });
+}).catch(err => {
+  console.error('No se puede conectar a la base de datos:', err);
+});
+
 

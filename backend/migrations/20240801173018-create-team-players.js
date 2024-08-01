@@ -2,22 +2,19 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Teams', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      userId: {
+    await queryInterface.createTable('TeamPlayers', {
+      teamId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users',
+          model: 'Teams',
           key: 'id'
+        }
+      },
+      playerId: {
+        type: Sequelize.STRING,
+        references: {
+          model: 'Players',
+          key: 'player_id'
         }
       },
       createdAt: {
@@ -32,9 +29,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Teams');
+    await queryInterface.dropTable('TeamPlayers');
   }
 };
-
-
 

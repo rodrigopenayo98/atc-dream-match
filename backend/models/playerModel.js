@@ -1,23 +1,16 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const Team = require('./teamModel');
 
 const Player = sequelize.define('Player', {
-  name: {
+  player_id: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true,
   },
-  position: {
+  player_name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
-  teamId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Team,
-      key: 'id'
-    }
-  }
 });
 
 module.exports = Player;
